@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}VoxServe - Food Rescue & Redistribution{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%22><text y=%2222%22 font-size=%2220%22>🌿</text></svg>">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <!-- Dark Green Navbar -->
+  <nav class="navbar">
+    <a href="{{ url_for('index') }}" class="nav-brand">
+      <div class="brand-icon">🌿</div>
+      <div>
+        <span class="brand-title">ReFeed</span>
+        <span class="brand-subtitle">Canteen Food Rescue & Redistribution</span>
+      </div>
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+      <li><a href="{{ url_for('find') }}" class="nav-link {% if request.endpoint == 'find' %}active{% endif %}">Find Food</a></li>
+      <li><a href="{{ url_for('donate') }}" class="nav-link {% if request.endpoint == 'donate' %}active{% endif %}">Donate Food</a></li>
+      <li>
+        <a href="{{ url_for('assistant_page') }}" class="nav-link voice-link {% if request.endpoint == 'assistant_page' %}active{% endif %}">
+          🎙️ Voice Assistant
+        </a>
+      </li>
+    </ul>
+
+    <!-- Viewing as Role Dropdown -->
+    <div class="role-box">
+      <span class="role-label">Viewing as:</span>
+      <form id="roleForm" action="{{ url_for('set_role') }}" method="POST" style="margin: 0; display: inline;">
+        <select name="role" class="role-select" onchange="document.getElementById('roleForm').submit();">
+          <option value="customer" {% if current_role == 'customer' %}selected{% endif %}>Customer</option>
+          <option value="donor" {% if current_role == 'donor' %}selected{% endif %}>Donor</option>
+        </select>
+      </form>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-box">
+            <span>{{ message }}</span>
+            <span style="cursor:pointer;" onclick="this.parentElement.style.display='none';">&times;</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer>
+    <p>🌿 <strong>Annam Loop</strong> &mdash; Food Rescue and Redistribution for small canteens and messes.</p>
+    <p style="margin-top: 0.3rem; font-size: 0.8rem; opacity: 0.8;">Powered by FastMCP over Streamable HTTP & Flask with SQLite.</p>
+  </footer>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

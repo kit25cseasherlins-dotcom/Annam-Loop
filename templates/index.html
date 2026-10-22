@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Home - ReFeed{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">
+      <span>✨ Zero Food Waste</span> &bull; <span>Local Canteen Rescue</span>
+    </div>
+    <h1>ReFeed</h1>
+    <p>
+      ReFeed connects small messes, canteens, and eateries to hungry neighbors. 
+      Listing surplus meals takes seconds, prevents kitchen waste, and provides hot, affordable food to local communities.
+    </p>
+
+    <div class="hero-actions">
+      {% if current_role == 'donor' %}
+        <a href="{{ url_for('donate') }}" class="btn btn-saffron">➕ List Surplus Food</a>
+        <a href="{{ url_for('find') }}" class="btn btn-outline">Explore Nearby Listings</a>
+      {% else %}
+        <a href="{{ url_for('find') }}" class="btn btn-saffron">🔍 Find Food Near Me</a>
+        <a href="{{ url_for('assistant_page') }}" class="btn btn-green">🎙️ Try Voice Assistant</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<!-- Live Stats Section -->
+<section class="stats-grid" id="statsGrid">
+  <div class="stat-card">
+    <div class="stat-icon green">🍲</div>
+    <div>
+      <div class="stat-val" id="statLiveListings">{{ stats.live_listings }}</div>
+      <div class="stat-title">Live Listings</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon saffron">📦</div>
+    <div>
+      <div class="stat-val" id="statPortionsAvailable">{{ stats.portions_available }}</div>
+      <div class="stat-title">Portions Available</div>
+    </div>
+  </div>
+
+  <div class="stat-card">
+    <div class="stat-icon blue">🤝</div>
+    <div>
+      <div class="stat-val" id="statPortionsReserved">{{ stats.portions_reserved }}</div>
+      <div class="stat-title">Portions Reserved</div>
+    </div>
+  </div>
+</section>
+
+<!-- "Available Now" Spotlight Card -->
+{% if featured_item %}
+<section class="spotlight-card">
+  <div class="spotlight-header">
+    <div class="spotlight-badge">⚡ Available Now &bull; Nearest Pickup</div>
+    <span style="font-size: 0.85rem; color: var(--text-muted);">Safe until: {{ featured_item.safe_until }}</span>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2 style="font-size: 1.5rem; color: var(--navbar-green); margin-bottom: 0.2rem;">{{ featured_item.name }}</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        🏢 <strong>{{ featured_item.canteen }}</strong> &bull; 📍 {{ featured_item.distance_km }} km away
+      </p>
+      <div style="margin-top: 0.5rem; display: flex; gap: 0.5rem;">
+        <span class="badge badge-qty">🟢 {{ featured_item.quantity }} {{ featured_item.unit }}s remaining</span>
+        <span class="badge badge-distance">📍 Nearest to you</span>
+      </div>
+    </div>
+
+    <div style="text-align: right;">
+      <div style="font-size: 1.8rem; font-weight: 800; color: var(--saffron); margin-bottom: 0.5rem;">
+        {% if featured_item.price > 0 %}₹{{ "%.0f"|format(featured_item.price) }}{% else %}FREE{% endif %}
+      </div>
+      <form action="{{ url_for('reserve_route', listing_id=featured_item.id) }}" method="POST" style="margin:0;">
+        <button type="submit" class="btn btn-saffron">⚡ Reserve 1 {{ featured_item.unit|capitalize }}</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+
+
+</section>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Periodically refresh live stats
+  async function refreshStats() {
+    try {
+      const resp = await fetch('{{ url_for("api_stats") }}');
+      if (resp.ok) {
+        const data = await resp.json();
+        document.getElementById('statLiveListings').textContent = data.live_listings;
+        document.getElementById('statPortionsAvailable').textContent = data.portions_available;
+        document.getElementById('statPortionsReserved').textContent = data.portions_reserved;
+      }
+    } catch (e) {
+      console.warn("Stats refresh error:", e);
+    }
+  }
+  setInterval(refreshStats, 5000);
+</script>
+{% endblock %}

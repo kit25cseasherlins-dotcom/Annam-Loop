@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Find Food - ReFeed{% endblock %}
+
+{% block content %}
+<div>
+  <!-- Header & Sort bar -->
+  <div style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+    <div>
+      <h1 style="color: var(--navbar-green); font-size: 1.9rem; margin-bottom: 0.3rem;">Find Surplus Food</h1>
+      <p style="color: var(--text-muted); font-size: 0.95rem;">
+        Browse available meals from nearby messes and canteens. Sorted nearest first to ensure quick pickup.
+      </p>
+    </div>
+
+    <!-- Sorting Filter -->
+    <form action="{{ url_for('find') }}" method="GET" style="display: flex; align-items: center; gap: 0.5rem; margin: 0;">
+      <label for="sort" style="font-size: 0.88rem; font-weight: 600; color: var(--text-muted);">Sort By:</label>
+      <select id="sort" name="sort" class="form-control" style="width: auto; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onchange="this.form.submit();">
+        <option value="distance" {% if current_sort == 'distance' %}selected{% endif %}>Nearest First (Distance)</option>
+        <option value="price" {% if current_sort == 'price' %}selected{% endif %}>Price (Low to High)</option>
+        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest Added</option>
+      </select>
+    </form>
+  </div>
+
+  <!-- Listings Grid -->
+  {% if items %}
+    <div class="food-grid">
+      {% for item in items %}
+        <div class="food-card">
+          <div>
+            <div class="food-meta">
+              <div>
+                <h3 class="food-name">{{ item.name }}</h3>
+                <div class="food-canteen">
+                  <span>🏢</span> <strong>{{ item.canteen }}</strong>
+                </div>
+              </div>
+              <div class="food-price {% if item.price == 0 %}free{% endif %}">
+                {% if item.price > 0 %}₹{{ "%.0f"|format(item.price) }}{% else %}FREE{% endif %}
+              </div>
+            </div>
+
+            <div class="food-badges">
+              <span class="badge badge-distance">📍 {{ item.distance_km }} km away</span>
+              <span class="badge badge-qty">🟢 {{ item.quantity }} {{ item.unit }}s left</span>
+              <span class="badge badge-time">⏳ Safe until {{ item.safe_until[-8:-3] }}</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; border-top: 1px solid var(--border-light); padding-top: 1rem;">
+            <form action="{{ url_for('reserve_route', listing_id=item.id) }}" method="POST" style="margin: 0;">
+              <button type="submit" class="btn btn-saffron" style="width: 100%;">
+                ⚡ Reserve 1 {{ item.unit|capitalize }}
+              </button>
+            </form>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="card" style="text-align: center; padding: 3rem 1.5rem; margin-top: 1rem;">
+      <div style="font-size: 3rem; margin-bottom: 0.75rem;">🍲</div>
+      <h3 style="color: var(--navbar-green); font-size: 1.3rem; margin-bottom: 0.5rem;">No Surplus Food Active Right Now</h3>
+      <p style="color: var(--text-muted); max-width: 450px; margin: 0 auto 1.5rem auto;">
+        Local canteens haven't listed any leftover portions in this safe window yet. Check back in a few minutes or switch to Donor mode to list surplus food!
+      </p>
+      <a href="{{ url_for('donate') }}" class="btn btn-outline">List Food as Donor</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

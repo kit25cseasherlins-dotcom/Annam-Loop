@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Voice Assistant (Alexa+ Experience) - ReFeed{% endblock %}
+
+{% block content %}
+<div class="assistant-container">
+  <!-- Assistant Header & Role Indicator -->
+  <div style="text-align: center; margin-bottom: 1.5rem;">
+    <h1 style="color: var(--navbar-green); font-size: 2rem; margin-bottom: 0.3rem;">Voice Assistant</h1>
+    <p style="color: var(--text-muted); font-size: 0.95rem;">
+      Simulated Alexa+ experience powered by MCP Tools. Speak naturally or type instructions below.
+    </p>
+
+    <!-- Role Indicator Pill -->
+    <div style="margin-top: 0.75rem; display: inline-flex; align-items: center; gap: 0.5rem; background: #ffffff; border: 1px solid var(--border-light); padding: 0.35rem 0.9rem; border-radius: 20px; box-shadow: var(--shadow-sm);">
+      <span style="font-size: 0.82rem; color: var(--text-muted);">Current Mode:</span>
+      <strong style="color: var(--saffron); text-transform: capitalize;" id="currentRoleBadge">{{ current_role }}</strong>
+      <span style="font-size: 0.75rem; color: var(--text-muted);">
+        ({% if current_role == 'donor' %}Can list & remove food{% else %}Can find & reserve meals{% endif %})
+      </span>
+    </div>
+  </div>
+
+  <!-- Mic Stage -->
+  <div class="mic-stage">
+    <div class="mic-button-wrapper">
+      <button id="micBtn" class="mic-btn" title="Click to speak">
+        🎙️
+      </button>
+      <div class="pulse-ring"></div>
+    </div>
+
+    <div class="mic-status" id="micStatusText">Click microphone to speak</div>
+
+    <!-- Controls Bar: Language Selector & Mute Toggle -->
+    <div class="controls-bar">
+      <div class="lang-select-box">
+        <span>🌐 Language:</span>
+        <select id="langSelect" class="lang-select">
+          <option value="en-IN" selected>English (en-IN)</option>
+          <option value="ta-IN">Tamil / தமிழ் (ta-IN)</option>
+        </select>
+      </div>
+
+      <div class="mute-toggle-box">
+        <button id="muteBtn" class="mute-btn" type="button">
+          🔊 Sound On
+        </button>
+      </div>
+    </div>
+
+    <!-- Suggested Voice Prompts Pill Row -->
+    <div style="margin-top: 1.25rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.45rem;">
+      <span style="font-size: 0.8rem; color: var(--text-muted); align-self: center;">Try saying:</span>
+      {% if current_role == 'donor' %}
+        <button type="button" class="badge prompt-pill" onclick="sendQuickPrompt('mutton biryani, three parcels, 20 rupees each')">
+          "mutton biryani, three parcels, 20 rupees each"
+        </button>
+        <button type="button" class="badge prompt-pill" onclick="sendQuickPrompt('remove mutton biryani')">
+          "remove mutton biryani"
+        </button>
+      {% else %}
+        <button type="button" class="badge prompt-pill" onclick="sendQuickPrompt('what food is near me')">
+          "what food is near me"
+        </button>
+        <button type="button" class="badge prompt-pill" onclick="sendQuickPrompt('reserve the first one')">
+          "reserve the first one"
+        </button>
+        <button type="button" class="badge prompt-pill" onclick="sendQuickPrompt('book chapati')">
+          "book chapati"
+        </button>
+      {% endif %}
+      <button type="button" class="badge prompt-pill" onclick="sendQuickPrompt('how many portions available')">
+        "how many portions available"
+      </button>
+    </div>
+  </div>
+
+  <!-- Chat Stream -->
+  <div class="chat-thread" id="chatThread">
+    <!-- Initial welcome message from assistant -->
+    <div class="chat-bubble assistant">
+      <div class="assistant-spoken">
+        <span>🤖</span>
+        <span>Welcome to ReFeed Voice Assistant!</span>
+      </div>
+      <p style="font-size: 0.95rem; color: #444;">
+        {% if current_role == 'donor' %}
+          You are viewing as a <strong>Donor</strong>. You can say things like <em>"Mutton biryani, three parcels, 20 rupees each"</em> or <em>"Remove listing 1"</em>.
+        {% else %}
+          You are viewing as a <strong>Customer</strong>. You can ask <em>"What food is near me?"</em>, <em>"Reserve the first one"</em>, or <em>"Book Chapati"</em>.
+        {% endif %}
+      </p>
+    </div>
+  </div>
+
+  <!-- Fallback Editable Transcript / Input Box -->
+  <div class="input-fallback-box">
+    <input type="text" id="transcriptInput" placeholder="Live speech transcript will appear here, or type your command..." autocomplete="off">
+    <button id="sendBtn" class="btn btn-saffron btn-sm" style="padding: 0.6rem 1.2rem;">
+      Send ➔
+    </button>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/assistant.js') }}"></script>
+{% endblock %}
