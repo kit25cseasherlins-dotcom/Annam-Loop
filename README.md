@@ -1,8 +1,8 @@
-# 🌿 Annam Loop
+# 🌿 ReFeed
 
-**Annam Loop** is a localized surplus food rescue and redistribution web platform designed for small canteens, messes, and local eateries. It connects surplus food providers (Donors) with local community members and students (Customers) to eliminate cooked kitchen waste, promote hot meal redistribution, and ensure meals are safely consumed within verified freshness windows.
+ReFeed is a localized surplus food rescue and redistribution web platform designed for small canteens, messes, and local eateries. It connects surplus food providers (Donors) with local community members and students (Customers) to reduce cooked food waste, promote meal redistribution, and ensure meals are consumed within defined freshness windows.
 
-The application incorporates a simulated **Alexa+ Voice Assistant Experience** in a modern web interface, allowing hands-free voice operations to list food, discover nearby surplus dishes, and reserve meal portions powered by the **Model Context Protocol (MCP)** over Streamable HTTP.
+The application incorporates a simulated Alexa+ Voice Assistant Experience in a modern web interface, allowing hands-free voice operations to list food, discover nearby surplus dishes, and reserve meal portions powered by the Model Context Protocol (MCP) over Streamable HTTP.
 
 ---
 
@@ -13,7 +13,7 @@ The system operates around a single source of truth:
 ```
 ┌────────────────────────────────────────────────────────┐
 │                   Shared Database                      │
-│                 SQLite (annam.db)                      │
+│                 SQLite (Refeed.db)                      │
 └───────────────────────────┬────────────────────────────┘
                             │
                ┌────────────┴────────────┐
@@ -40,7 +40,7 @@ The system operates around a single source of truth:
                    (POST /api/assistant)
 ```
 
-1. **Shared SQLite Layer (`annam.db` & `services.py`)**:
+1. **Shared SQLite Layer (`Refeed.db` & `services.py`)**:
    - Both the web application and the MCP server share identical business logic and database state.
    - Any food listed, reserved, or removed via voice or web reflects immediately on both the Find Food page and the Home page live statistics.
    - Enforces food safety consumption windows (e.g., Rice/Gravy 4h, Snacks 6h, Sweets 8h). Expired items are strictly excluded from search.
