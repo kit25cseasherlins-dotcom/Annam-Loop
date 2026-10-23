@@ -5,6 +5,9 @@ ReFeed is a localized surplus food rescue and redistribution web platform design
 The application incorporates a simulated Alexa+ Voice Assistant Experience in a modern web interface, allowing hands-free voice operations to list food, discover nearby surplus dishes, and reserve meal portions powered by the Model Context Protocol (MCP) over Streamable HTTP.
 
 ---
+## 📺 Demo Video
+
+[![Watch the ReFeed Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg)](https://youtu.be/SEKOkt4w2Hs?si=6FJwhVJ3bxX9juK0)
 
 ## 🏛️ Architecture Overview
 
