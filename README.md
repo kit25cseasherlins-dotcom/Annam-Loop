@@ -7,7 +7,7 @@ The application incorporates a simulated Alexa+ Voice Assistant Experience in a 
 ---
 ## 📺 Demo Video
 
-[![Watch the ReFeed Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg)](https://youtu.be/SEKOkt4w2Hs?si=6FJwhVJ3bxX9juK0)
+[![Watch the ReFeed Vedio]](https://youtu.be/SEKOkt4w2Hs?si=6FJwhVJ3bxX9juK0)
 
 ## 🏛️ Architecture Overview
 
